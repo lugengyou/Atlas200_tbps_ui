@@ -29,7 +29,8 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         super(MyMainWindow,self).__init__(parent)
         self.setupUi(self)
         # 初始化模型        
-        if 0:
+        if 1:
+            self.image_encoder = net(os.path.join(project_base_path, "deploy/model/xsmall_image_encode_310B4.om")) 
             bpe_path = os.path.join(project_base_path, "data/bpe_simple_vocab_16e6.txt.gz")
             self.tokenizer = SimpleTokenizer(bpe_path)
             self.text_encoder = net(os.path.join(project_base_path, "deploy/model/xsmall_text_encode_310B4.om")) 
@@ -61,7 +62,13 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         event.accept()  # 接受关闭事件
 
     def release_resources(self):
-        print("Release resources")
+        # print("Release resources")
+        if self.image_encoder is not None:
+            del self.image_encoder
+        if self.text_encoder is not None:
+            del self.text_encoder
+        if self.consine_sim_model is not None:
+            del self.consine_sim_model
 
     # ************************ slot functions ************************ #
     def slot_select_dataset(self):        
@@ -99,8 +106,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             self.terminal_message(enter_text_description)
             # 检查静态数据库及图像索引是否完备
             if self.check_static_database():
-                result_sim, result_pids, result_image_paths, dataset_base_path = self.static_search(enter_text_description)
-                # print(result_sim, result_image_paths)
+                result_sim, result_pids, result_image_paths, dataset_base_path = self.static_search(enter_text_description)                
                 self.show_search_result(result_sim, result_image_paths, dataset_base_path)
             else:
                 self.terminal_message("ERROR: Please check static database!")
@@ -147,52 +153,53 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         # 获取数据集 base 目录
         dataset_base_path = os.path.dirname(self.static_database_file_path)
         self.update_progress_bar(1, 5)
-        # # 2.获取文本特征
-        # text = tokenize(query_text, tokenizer=self.tokenizer, text_length=77, truncate=True)
-        # text = text.reshape((1, 77))
-        # result = self.text_encoder.text_forward(text) # npu 计算     
-        # text_feature = result[text.argmax(axis=-1), :] # 获取最大值的索引对应的特征，即为文本的 cls 特征        
+        # 2.获取文本特征
+        text = tokenize(query_text, tokenizer=self.tokenizer, text_length=77, truncate=True)
+        text = text.reshape((1, 77))
+        result = self.text_encoder.text_forward(text) # npu 计算     
+        text_feature = result[text.argmax(axis=-1), :] # 获取最大值的索引对应的特征，即为文本的 cls 特征        
         self.update_progress_bar(2, 5)
-        # # 3.计算图像数据库特征与文本特征的相似度
-        # similarity, index = [], []
-        # loops = N // 1024
-        # for i in range(loops):
-        #     # 准备图像数据
-        #     start_index = i * 1024 
-        #     end_index = min((i + 1) * 1024, N)
-        #     images = test_image_norm_features[start_index:end_index]
-        #     # DEBUG 文本数据
-        #     # text_feature = images[0, :]
-        #     # 准备start_index数据
-        #     start_index = np.array([start_index], dtype=np.int64) 
-        #     inputs = [images, text_feature, start_index]
-        #     result = self.consine_sim_model.similarity_forward(inputs) # npu 计算  
-        #     similarity.append(result[0])
-        #     index.append(result[1])        
-        # # 处理不整除的情况
-        # if N % 1024 != 0:
-        #     start_index = loops * 1024
-        #     images = np.zeros((1024, 512), dtype=np.float32)
-        #     images[0 : N - start_index] = test_image_norm_features[start_index:]
-        #     start_index = np.array([start_index], dtype=np.int64)
-        #     inputs = [images, text_feature, start_index]
-        #     result = self.consine_sim_model.similarity_forward(inputs)
-        #     similarity.append(result[0])
-        #     index.append(result[1])
+        # 3.计算图像数据库特征与文本特征的相似度
+        similarity, index = [], []
+        loops = N // 1024
+        for i in range(loops):
+            # 准备图像数据
+            start_index = i * 1024 
+            end_index = min((i + 1) * 1024, N)
+            images = test_image_norm_features[start_index:end_index]
+            # DEBUG 文本数据
+            # text_feature = images[0, :]
+            # 准备start_index数据
+            start_index = np.array([start_index], dtype=np.int64) 
+            inputs = [images, text_feature, start_index]
+            result = self.consine_sim_model.similarity_forward(inputs) # npu 计算  
+            similarity.append(result[0])
+            index.append(result[1])        
+        # 处理不整除的情况
+        if N % 1024 != 0:
+            start_index = loops * 1024
+            images = np.zeros((1024, 512), dtype=np.float32)
+            images[0 : N - start_index] = test_image_norm_features[start_index:]
+            start_index = np.array([start_index], dtype=np.int64)
+            inputs = [images, text_feature, start_index]
+            result = self.consine_sim_model.similarity_forward(inputs)
+            similarity.append(result[0])
+            index.append(result[1])
         self.update_progress_bar(3, 5)
-        # # 4.合并结果,并进行最终 TopK 操作    
-        # similarity = np.concatenate(similarity, axis=1)
-        # index = np.concatenate(index, axis=1)    
-        # # 获取前 K 个最大值的索引
-        # K = 10
-        # sorted_indices = np.argsort(similarity, axis=1)[:, ::-1]
-        # indices = sorted_indices[:, :K]
-        # top10_values = np.take_along_axis(similarity, indices, axis=1).flatten()
-        # top10_indices = np.take_along_axis(index, indices, axis=1).flatten()
+        # 4.合并结果,并进行最终 TopK 操作    
+        similarity = np.concatenate(similarity, axis=1)
+        index = np.concatenate(index, axis=1)    
+        # 获取前 K 个最大值的索引
+        K = 10
+        sorted_indices = np.argsort(similarity, axis=1)[:, ::-1]
+        indices = sorted_indices[:, :K]
+        top10_values = np.take_along_axis(similarity, indices, axis=1).flatten()
+        top10_indices = np.take_along_axis(index, indices, axis=1).flatten()
         self.update_progress_bar(4, 5)
         # 5. 返回 Top10 的相似度值和对应的图像路径
-        top10_values = np.random.rand(1, 10).flatten()
-        top10_indices = np.random.randint(0, N, (1, 10)).flatten()        
+        # DEBUG for develop
+        # top10_values = np.random.rand(1, 10).flatten()
+        # top10_indices = np.random.randint(0, N, (1, 10)).flatten()        
         show_images_path =  [static_database_json['img_paths'][i] for i in top10_indices]
         self.update_progress_bar(5, 5)
         return top10_values, top10_indices, show_images_path, dataset_base_path
@@ -202,69 +209,69 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         database_image_files = self.dynamic_database_image_files
         dataset_base_path = self.dynamic_database_base_path
         total_bar = len(database_image_files) + 10        
-        # # 1.获取文本特征
-        # text = tokenize(query_text, tokenizer=self.tokenizer, text_length=77, truncate=True)
-        # text = text.reshape((1, 77))
-        # result = self.text_encoder.text_forward(text) # npu 计算     
-        # text_feature = result[text.argmax(axis=-1), :] # 获取最大值的索引对应的特征，即为文本的 cls 特征 
+        # 1.获取文本特征
+        text = tokenize(query_text, tokenizer=self.tokenizer, text_length=77, truncate=True)
+        text = text.reshape((1, 77))
+        result = self.text_encoder.text_forward(text) # npu 计算     
+        text_feature = result[text.argmax(axis=-1), :] # 获取最大值的索引对应的特征，即为文本的 cls 特征 
         self.update_progress_bar(5, total_bar)
-        # # 2.获取图像特征
-        # image_features = []
-        # i = 1
-        # for image_file in database_image_files:
-        #     img_path = os.path.join(dataset_base_path, image_file)
-        #     om_input_image = transfer_pic(img_path)
-        #     result = self.image_encoder.image_forward(om_input_image)
-        #     # 归一化 om 模型推理结果
-        #     om_image_feat = result[0, :].reshape(1, -1)
-        #     om_image_feat = om_image_feat / np.linalg.norm(om_image_feat, ord=2, axis=-1, keepdims=True)
-        #     image_features.append(om_image_feat) 
-        #     i = i + 1
-        #     self.update_progress_bar(5 + i, total_bar)
-        # self.dynamic_image_features = np.concatenate(image_features, axis=0)                        
-        # N = self.dynamic_image_features.shape[0]        
-        # # 3.计算图像数据库特征与文本特征的相似度
-        # similarity, index = [], []
-        # loops = N // 1024
-        # for i in range(loops):
-        #     # 准备图像数据
-        #     start_index = i * 1024 
-        #     end_index = min((i + 1) * 1024, N)
-        #     images = self.dynamic_image_features[start_index:end_index]
-        #     # DEBUG 文本数据
-        #     # text_feature = images[0, :]
-        #     # 准备start_index数据
-        #     start_index = np.array([start_index], dtype=np.int64) 
-        #     inputs = [images, text_feature, start_index]
-        #     result = self.consine_sim_model.similarity_forward(inputs) # npu 计算  
-        #     similarity.append(result[0])
-        #     index.append(result[1])        
-        # # 处理不整除的情况
-        # if N % 1024 != 0:
-        #     start_index = loops * 1024
-        #     images = np.zeros((1024, 512), dtype=np.float32)
-        #     images[0 : N - start_index] = self.dynamic_image_features[start_index:]
-        #     start_index = np.array([start_index], dtype=np.int64)
-        #     inputs = [images, text_feature, start_index]
-        #     result = self.consine_sim_model.similarity_forward(inputs)
-        #     similarity.append(result[0])
-        #     index.append(result[1])
+        # 2.获取图像特征
+        image_features = []
+        i = 1
+        for image_file in database_image_files:
+            img_path = os.path.join(dataset_base_path, image_file)
+            om_input_image = transfer_pic(img_path)
+            result = self.image_encoder.image_forward(om_input_image)
+            # 归一化 om 模型推理结果
+            om_image_feat = result[0, :].reshape(1, -1)
+            om_image_feat = om_image_feat / np.linalg.norm(om_image_feat, ord=2, axis=-1, keepdims=True)
+            image_features.append(om_image_feat) 
+            i = i + 1
+            self.update_progress_bar(5 + i, total_bar)
+        self.dynamic_image_features = np.concatenate(image_features, axis=0)                        
+        N = self.dynamic_image_features.shape[0]        
+        # 3.计算图像数据库特征与文本特征的相似度
+        similarity, index = [], []
+        loops = N // 1024
+        for i in range(loops):
+            # 准备图像数据
+            start_index = i * 1024 
+            end_index = min((i + 1) * 1024, N)
+            images = self.dynamic_image_features[start_index:end_index]
+            # DEBUG 文本数据
+            # text_feature = images[0, :]
+            # 准备start_index数据
+            start_index = np.array([start_index], dtype=np.int64) 
+            inputs = [images, text_feature, start_index]
+            result = self.consine_sim_model.similarity_forward(inputs) # npu 计算  
+            similarity.append(result[0])
+            index.append(result[1])        
+        # 处理不整除的情况
+        if N % 1024 != 0:
+            start_index = loops * 1024
+            images = np.zeros((1024, 512), dtype=np.float32)
+            images[0 : N - start_index] = self.dynamic_image_features[start_index:]
+            start_index = np.array([start_index], dtype=np.int64)
+            inputs = [images, text_feature, start_index]
+            result = self.consine_sim_model.similarity_forward(inputs)
+            similarity.append(result[0])
+            index.append(result[1])
         self.update_progress_bar(total_bar - 3, total_bar)
-        # # 4.合并结果,并进行最终 TopK 操作    
-        # similarity = np.concatenate(similarity, axis=1)
-        # index = np.concatenate(index, axis=1)    
-        # # 获取前 K 个最大值的索引
-        # K = 10
-        # sorted_indices = np.argsort(similarity, axis=1)[:, ::-1]
-        # indices = sorted_indices[:, :K]
-        # top10_values = np.take_along_axis(similarity, indices, axis=1).flatten()
-        # top10_indices = np.take_along_axis(index, indices, axis=1).flatten()
-        
-        # 5. 返回 Top10 的相似度值和对应的图像路径
-        self.dynamic_image_features = np.random.randn(500, 512)
-        N = self.dynamic_image_features.shape[0]
-        top10_values = np.random.rand(1, 10).flatten()
-        top10_indices = np.random.randint(0, N, (1, 10)).flatten()        
+        # 4.合并结果,并进行最终 TopK 操作    
+        similarity = np.concatenate(similarity, axis=1)
+        index = np.concatenate(index, axis=1)    
+        # 获取前 K 个最大值的索引
+        K = 10
+        sorted_indices = np.argsort(similarity, axis=1)[:, ::-1]
+        indices = sorted_indices[:, :K]
+        top10_values = np.take_along_axis(similarity, indices, axis=1).flatten()
+        top10_indices = np.take_along_axis(index, indices, axis=1).flatten()        
+        # # 5. 返回 Top10 的相似度值和对应的图像路径
+        # DEBUG for develop
+        # self.dynamic_image_features = np.random.randn(500, 512)
+        # N = self.dynamic_image_features.shape[0]
+        # top10_values = np.random.rand(1, 10).flatten()
+        # top10_indices = np.random.randint(0, N, (1, 10)).flatten()        
         show_images_path =  [os.path.join(dataset_base_path, database_image_files[i]) for i in top10_indices]
         # 6. 设置保存动态图像特征文件名称
         self.lineEdit_dynamic_to_static_name.setText(f"{self.dynamic_dataset_folder_name}_test_data.npy")
@@ -336,6 +343,3 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         # 更新进度条
         self.progressBar.setValue(value)
         
-
-
-
