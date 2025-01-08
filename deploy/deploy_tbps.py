@@ -1,9 +1,18 @@
 import os
-import json
+import sys
+# 通过当前文件目录的相对路径设置工程的根目录
+current_file_path = os.path.abspath(os.path.dirname(__file__))
+project_base_path = os.path.abspath(os.path.join(current_file_path, "../"))
+sys.path.append(project_base_path)
 
-# import acl
+from config import DEVICE_IS_ATLAS
+if DEVICE_IS_ATLAS:
+    import acl
+
+import json
 import numpy as np
 from PIL import Image
+
 
 
 
