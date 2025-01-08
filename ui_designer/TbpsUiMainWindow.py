@@ -2,7 +2,7 @@
 Author: gengyou.lu 1770591868@qq.com
 Date: 2025-01-07 10:34:13
 FilePath: /Atlas200_tbps_ui/ui_designer/TbpsUiMainWindow.py
-LastEditTime: 2025-01-08 16:43:04
+LastEditTime: 2025-01-08 21:02:00
 Description: tbps ui main window
 '''
 import os
@@ -102,7 +102,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             return
         # 获取检索 style
         search_style = self.comboBox_search_style.currentText()        
-        if search_style == "Static Search":
+        if search_style == "静态检索":
             self.terminal_message("Search style: Static Search")            
             self.terminal_message("Query:")
             self.terminal_message(enter_text_description)
@@ -113,7 +113,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             else:
                 self.terminal_message("ERROR: Please check static database!", is_error=True)
                 return
-        elif search_style == "Dynamic Search":
+        elif search_style == "动态检索":
             self.terminal_message("Search style: Dynamic Search")            
             self.terminal_message("Query:")
             self.terminal_message(enter_text_description)            
@@ -341,7 +341,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             pixmap = QPixmap(image_path)
             resized_pixmap = pixmap.scaled(100, 200) 
             self.show_images_label_list[i].setPixmap(resized_pixmap)
-            self.show_sim_label_list[i].setText(f"similarity: {sim:.3f}")
+            self.show_sim_label_list[i].setText(f"匹配度: {sim:.3f}")
             self.show_images_label_list[i].setScaledContents(True)
             self.show_images_label_list[i].setAlignment(QtCore.Qt.AlignCenter)
             self.show_sim_label_list[i].setAlignment(QtCore.Qt.AlignCenter)
