@@ -277,7 +277,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="font">
                       <font>
-                       <pointsize>9</pointsize>
+                       <pointsize>10</pointsize>
                       </font>
                      </property>
                      <property name="text">
@@ -415,6 +415,11 @@ p, li { white-space: pre-wrap; }
                           <height>16777215</height>
                          </size>
                         </property>
+                        <property name="font">
+                         <font>
+                          <pointsize>10</pointsize>
+                         </font>
+                        </property>
                         <property name="text">
                          <string>Select path</string>
                         </property>
@@ -469,10 +474,27 @@ p, li { white-space: pre-wrap; }
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="lineEdit_3"/>
+                       <widget class="QLineEdit" name="lineEdit_dynamic_to_static_name"/>
                       </item>
                       <item>
                        <widget class="QPushButton" name="pushButton_3">
+                        <property name="minimumSize">
+                         <size>
+                          <width>80</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>80</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <pointsize>10</pointsize>
+                         </font>
+                        </property>
                         <property name="text">
                          <string>Save</string>
                         </property>
@@ -511,6 +533,9 @@ p, li { white-space: pre-wrap; }
                 <number>0</number>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_5">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -655,6 +680,11 @@ p, li { white-space: pre-wrap; }
                       </item>
                       <item>
                        <widget class="QComboBox" name="comboBox_search_style">
+                        <property name="font">
+                         <font>
+                          <pointsize>9</pointsize>
+                         </font>
+                        </property>
                         <item>
                          <property name="text">
                           <string>Static Search</string>
@@ -683,6 +713,7 @@ p, li { white-space: pre-wrap; }
                         </property>
                         <property name="font">
                          <font>
+                          <pointsize>10</pointsize>
                           <weight>75</weight>
                           <bold>true</bold>
                          </font>
@@ -693,6 +724,55 @@ p, li { white-space: pre-wrap; }
                        </widget>
                       </item>
                      </layout>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="frame_29">
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_8">
+                   <property name="spacing">
+                    <number>6</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_9">
+                     <property name="minimumSize">
+                      <size>
+                       <width>70</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>70</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>10</pointsize>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Progress:</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QProgressBar" name="progressBar">
+                     <property name="value">
+                      <number>0</number>
+                     </property>
                     </widget>
                    </item>
                   </layout>
@@ -1301,18 +1381,8 @@ p, li { white-space: pre-wrap; }
                </layout>
               </widget>
              </item>
-             <item row="2" column="2">
+             <item row="2" column="2" colspan="2">
               <widget class="QFrame" name="frame_28">
-               <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="3">
-              <widget class="QFrame" name="frame_29">
                <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
                </property>
@@ -1423,7 +1493,7 @@ p, li { white-space: pre-wrap; }
      <y>256</y>
     </hint>
     <hint type="destinationlabel">
-     <x>-4</x>
+     <x>0</x>
      <y>256</y>
     </hint>
    </hints>
@@ -1439,7 +1509,7 @@ p, li { white-space: pre-wrap; }
      <y>353</y>
     </hint>
     <hint type="destinationlabel">
-     <x>-7</x>
+     <x>0</x>
      <y>351</y>
     </hint>
    </hints>
@@ -1471,8 +1541,24 @@ p, li { white-space: pre-wrap; }
      <y>642</y>
     </hint>
     <hint type="destinationlabel">
-     <x>-4</x>
+     <x>0</x>
      <y>643</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_save_dataset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>349</x>
+     <y>400</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-2</x>
+     <y>392</y>
     </hint>
    </hints>
   </connection>
@@ -1482,9 +1568,11 @@ p, li { white-space: pre-wrap; }
   <signal>signal_select_path()</signal>
   <signal>signal_search()</signal>
   <signal>signal_clean_terminal_output()</signal>
+  <signal>signal_save_dataset()</signal>
   <slot>slot_select_dataset()</slot>
   <slot>slot_select_path()</slot>
   <slot>slot_search()</slot>
   <slot>slot_clean_terminal_output()</slot>
+  <slot>slot_save_dataset()</slot>
  </slots>
 </ui>

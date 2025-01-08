@@ -2,7 +2,7 @@
 Author: gengyou.lu 1770591868@qq.com
 Date: 2025-01-07 10:34:13
 FilePath: /Atlas200_tbps_ui/ui_designer/TbpsUiMainWindow.py
-LastEditTime: 2025-01-08 11:41:04
+LastEditTime: 2025-01-08 15:14:26
 Description: tbps ui main window
 '''
 import os
@@ -45,7 +45,8 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         self.static_database_json_file_path = ""
         
         # 动态检索相关变量
-        self.dynamic_database_base_path = ""
+        self.dynamic_database_base_path = "" # 所选数据集文件夹的父目录，用于构建图像完整路径
+        self.dynamic_dataset_folder_name = "" # 所选数据集文件夹名称，用于构建存储图像特征文件名
         self.dynamic_database_image_files = []
         self.dynamic_image_features = None
         
@@ -119,6 +120,20 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             self.terminal_message("Please select search style")
             return
 
+    def slot_save_dataset(self):
+        save_npy_name = self.lineEdit_dynamic_to_static_name.text()
+        if save_npy_name.endswith('.npy') is False:
+            self.terminal_message("Please enter a valid file name, such as '*.npy'.")
+            return
+        # 保存动态图像特征
+        save_feature_path = os.path.join(self.dynamic_database_base_path, save_npy_name)        
+        np.save(save_feature_path, self.dynamic_image_features)
+        # 保存图像对应路径
+        save_image_path = save_feature_path.replace('.npy', '.json')
+        json_data = {"img_paths": self.dynamic_database_image_files}
+        json.dump(json_data, open(save_image_path, 'w'), indent=4)
+        self.terminal_message("Save dynamic dataset successfully!")
+
     def slot_clean_terminal_output(self):
         self.textBrowser_terminal_output.clear()
 
@@ -131,12 +146,13 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             static_database_json = json.load(f)
         # 获取数据集 base 目录
         dataset_base_path = os.path.dirname(self.static_database_file_path)
+        self.update_progress_bar(1, 5)
         # # 2.获取文本特征
         # text = tokenize(query_text, tokenizer=self.tokenizer, text_length=77, truncate=True)
         # text = text.reshape((1, 77))
         # result = self.text_encoder.text_forward(text) # npu 计算     
         # text_feature = result[text.argmax(axis=-1), :] # 获取最大值的索引对应的特征，即为文本的 cls 特征        
-
+        self.update_progress_bar(2, 5)
         # # 3.计算图像数据库特征与文本特征的相似度
         # similarity, index = [], []
         # loops = N // 1024
@@ -163,7 +179,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         #     result = self.consine_sim_model.similarity_forward(inputs)
         #     similarity.append(result[0])
         #     index.append(result[1])
-
+        self.update_progress_bar(3, 5)
         # # 4.合并结果,并进行最终 TopK 操作    
         # similarity = np.concatenate(similarity, axis=1)
         # index = np.concatenate(index, axis=1)    
@@ -173,25 +189,28 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         # indices = sorted_indices[:, :K]
         # top10_values = np.take_along_axis(similarity, indices, axis=1).flatten()
         # top10_indices = np.take_along_axis(index, indices, axis=1).flatten()
-        
+        self.update_progress_bar(4, 5)
         # 5. 返回 Top10 的相似度值和对应的图像路径
         top10_values = np.random.rand(1, 10).flatten()
         top10_indices = np.random.randint(0, N, (1, 10)).flatten()        
         show_images_path =  [static_database_json['img_paths'][i] for i in top10_indices]
+        self.update_progress_bar(5, 5)
         return top10_values, top10_indices, show_images_path, dataset_base_path
 
     def dynamic_search(self, query_text):
 
         database_image_files = self.dynamic_database_image_files
         dataset_base_path = self.dynamic_database_base_path
-                
+        total_bar = len(database_image_files) + 10        
         # # 1.获取文本特征
         # text = tokenize(query_text, tokenizer=self.tokenizer, text_length=77, truncate=True)
         # text = text.reshape((1, 77))
         # result = self.text_encoder.text_forward(text) # npu 计算     
-        # text_feature = result[text.argmax(axis=-1), :] # 获取最大值的索引对应的特征，即为文本的 cls 特征  
+        # text_feature = result[text.argmax(axis=-1), :] # 获取最大值的索引对应的特征，即为文本的 cls 特征 
+        self.update_progress_bar(5, total_bar)
         # # 2.获取图像特征
         # image_features = []
+        # i = 1
         # for image_file in database_image_files:
         #     img_path = os.path.join(dataset_base_path, image_file)
         #     om_input_image = transfer_pic(img_path)
@@ -199,7 +218,9 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         #     # 归一化 om 模型推理结果
         #     om_image_feat = result[0, :].reshape(1, -1)
         #     om_image_feat = om_image_feat / np.linalg.norm(om_image_feat, ord=2, axis=-1, keepdims=True)
-        #     image_features.append(om_image_feat)        
+        #     image_features.append(om_image_feat) 
+        #     i = i + 1
+        #     self.update_progress_bar(5 + i, total_bar)
         # self.dynamic_image_features = np.concatenate(image_features, axis=0)                        
         # N = self.dynamic_image_features.shape[0]        
         # # 3.计算图像数据库特征与文本特征的相似度
@@ -228,7 +249,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         #     result = self.consine_sim_model.similarity_forward(inputs)
         #     similarity.append(result[0])
         #     index.append(result[1])
-
+        self.update_progress_bar(total_bar - 3, total_bar)
         # # 4.合并结果,并进行最终 TopK 操作    
         # similarity = np.concatenate(similarity, axis=1)
         # index = np.concatenate(index, axis=1)    
@@ -245,10 +266,10 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         top10_values = np.random.rand(1, 10).flatten()
         top10_indices = np.random.randint(0, N, (1, 10)).flatten()        
         show_images_path =  [os.path.join(dataset_base_path, database_image_files[i]) for i in top10_indices]
+        # 6. 设置保存动态图像特征文件名称
+        self.lineEdit_dynamic_to_static_name.setText(f"{self.dynamic_dataset_folder_name}_test_data.npy")
+        self.update_progress_bar(total_bar, total_bar)
         return top10_values, top10_indices, show_images_path, dataset_base_path
-
-
-
 
     # ************************ utils functions ************************ #
     def terminal_message(self, text):
@@ -285,6 +306,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         image_extensions = ('.jpg', '.jpeg', '.png', '.bmp')        
         image_files = []
         basepath = os.path.basename(dynamic_database_path) # 提取最后一级目录，制作图像相对路径
+        self.dynamic_dataset_folder_name = basepath
         for f in os.listdir(dynamic_database_path):
             if f.lower().endswith(image_extensions):
                 image_files.append(os.path.join(basepath, f))
@@ -309,7 +331,10 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             self.show_images_label_list[i].setAlignment(QtCore.Qt.AlignCenter)
             self.show_sim_label_list[i].setAlignment(QtCore.Qt.AlignCenter)
             
-
+    def update_progress_bar(self, i, N):
+        value = int(i / N * 100)
+        # 更新进度条
+        self.progressBar.setValue(value)
         
 
 
