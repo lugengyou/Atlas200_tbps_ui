@@ -2,7 +2,7 @@
 Author: gengyou.lu 1770591868@qq.com
 Date: 2025-01-07 10:34:13
 FilePath: /Atlas200_tbps_ui/ui_designer/TbpsUiMainWindow.py
-LastEditTime: 2025-01-07 21:53:08
+LastEditTime: 2025-01-08 11:41:04
 Description: tbps ui main window
 '''
 import os
@@ -12,7 +12,7 @@ current_file_path = os.path.abspath(os.path.dirname(__file__))
 project_base_path = os.path.abspath(os.path.join(current_file_path, "../"))
 
 sys.path.append(project_base_path)
-from deploy.deploy_tbps import tokenize, net
+from deploy.deploy_tbps import tokenize, transfer_pic, net
 from deploy.simple_tokenizer import SimpleTokenizer
 
 
@@ -41,11 +41,14 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             self.consine_sim_model = None
 
         # 静态检索相关变量
-        self.static_database_file_path = None
-        self.static_database_json_file_path = None
+        self.static_database_file_path = ""
+        self.static_database_json_file_path = ""
         
         # 动态检索相关变量
-
+        self.dynamic_database_base_path = ""
+        self.dynamic_database_image_files = []
+        self.dynamic_image_features = None
+        
         # 显示相关变量
         self.show_images_label_list = [self.label_show_img1, self.label_show_img2, self.label_show_img3, self.label_show_img4, self.label_show_img5,
                                           self.label_show_img6, self.label_show_img7, self.label_show_img8, self.label_show_img9, self.label_show_img10]
@@ -101,15 +104,17 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             else:
                 self.terminal_message("ERROR: Please check static database!")
                 return
-
-
         elif search_style == "Dynamic Search":
             self.terminal_message("Search style:")
             self.terminal_message("Dynamic Search")
             self.terminal_message("Query:")
-            self.terminal_message(enter_text_description)
-            # TODO: 时间动态检索功能函数，并调用
-
+            self.terminal_message(enter_text_description)            
+            if self.get_dynamic_database():
+                result_sim, result_image_ids, result_image_paths, dataset_base_path = self.dynamic_search(enter_text_description)
+                self.show_search_result(result_sim, result_image_paths, dataset_base_path)
+            else:
+                self.terminal_message("ERROR: Dynamic data path dose not contain an image file!")
+                return
         else:
             self.terminal_message("Please select search style")
             return
@@ -175,6 +180,76 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         show_images_path =  [static_database_json['img_paths'][i] for i in top10_indices]
         return top10_values, top10_indices, show_images_path, dataset_base_path
 
+    def dynamic_search(self, query_text):
+
+        database_image_files = self.dynamic_database_image_files
+        dataset_base_path = self.dynamic_database_base_path
+                
+        # # 1.获取文本特征
+        # text = tokenize(query_text, tokenizer=self.tokenizer, text_length=77, truncate=True)
+        # text = text.reshape((1, 77))
+        # result = self.text_encoder.text_forward(text) # npu 计算     
+        # text_feature = result[text.argmax(axis=-1), :] # 获取最大值的索引对应的特征，即为文本的 cls 特征  
+        # # 2.获取图像特征
+        # image_features = []
+        # for image_file in database_image_files:
+        #     img_path = os.path.join(dataset_base_path, image_file)
+        #     om_input_image = transfer_pic(img_path)
+        #     result = self.image_encoder.image_forward(om_input_image)
+        #     # 归一化 om 模型推理结果
+        #     om_image_feat = result[0, :].reshape(1, -1)
+        #     om_image_feat = om_image_feat / np.linalg.norm(om_image_feat, ord=2, axis=-1, keepdims=True)
+        #     image_features.append(om_image_feat)        
+        # self.dynamic_image_features = np.concatenate(image_features, axis=0)                        
+        # N = self.dynamic_image_features.shape[0]        
+        # # 3.计算图像数据库特征与文本特征的相似度
+        # similarity, index = [], []
+        # loops = N // 1024
+        # for i in range(loops):
+        #     # 准备图像数据
+        #     start_index = i * 1024 
+        #     end_index = min((i + 1) * 1024, N)
+        #     images = self.dynamic_image_features[start_index:end_index]
+        #     # DEBUG 文本数据
+        #     # text_feature = images[0, :]
+        #     # 准备start_index数据
+        #     start_index = np.array([start_index], dtype=np.int64) 
+        #     inputs = [images, text_feature, start_index]
+        #     result = self.consine_sim_model.similarity_forward(inputs) # npu 计算  
+        #     similarity.append(result[0])
+        #     index.append(result[1])        
+        # # 处理不整除的情况
+        # if N % 1024 != 0:
+        #     start_index = loops * 1024
+        #     images = np.zeros((1024, 512), dtype=np.float32)
+        #     images[0 : N - start_index] = self.dynamic_image_features[start_index:]
+        #     start_index = np.array([start_index], dtype=np.int64)
+        #     inputs = [images, text_feature, start_index]
+        #     result = self.consine_sim_model.similarity_forward(inputs)
+        #     similarity.append(result[0])
+        #     index.append(result[1])
+
+        # # 4.合并结果,并进行最终 TopK 操作    
+        # similarity = np.concatenate(similarity, axis=1)
+        # index = np.concatenate(index, axis=1)    
+        # # 获取前 K 个最大值的索引
+        # K = 10
+        # sorted_indices = np.argsort(similarity, axis=1)[:, ::-1]
+        # indices = sorted_indices[:, :K]
+        # top10_values = np.take_along_axis(similarity, indices, axis=1).flatten()
+        # top10_indices = np.take_along_axis(index, indices, axis=1).flatten()
+        
+        # 5. 返回 Top10 的相似度值和对应的图像路径
+        self.dynamic_image_features = np.random.randn(500, 512)
+        N = self.dynamic_image_features.shape[0]
+        top10_values = np.random.rand(1, 10).flatten()
+        top10_indices = np.random.randint(0, N, (1, 10)).flatten()        
+        show_images_path =  [os.path.join(dataset_base_path, database_image_files[i]) for i in top10_indices]
+        return top10_values, top10_indices, show_images_path, dataset_base_path
+
+
+
+
     # ************************ utils functions ************************ #
     def terminal_message(self, text):
         self.textBrowser_terminal_output.append(text)
@@ -199,6 +274,28 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         self.static_database_file_path = static_database_file_path
         self.static_database_json_file_path = static_database_json_file_path
         return True
+
+    def get_dynamic_database(self):
+        dynamic_database_path = self.lineEdit_select_path.text()
+        if os.path.exists(dynamic_database_path) is False and os.path.isdir(dynamic_database_path) is False:
+            # 提示选择数据集
+            self.terminal_message("Please select true and exit data path")
+            return False
+        # 获取目录下的所有图像文件        
+        image_extensions = ('.jpg', '.jpeg', '.png', '.bmp')        
+        image_files = []
+        basepath = os.path.basename(dynamic_database_path) # 提取最后一级目录，制作图像相对路径
+        for f in os.listdir(dynamic_database_path):
+            if f.lower().endswith(image_extensions):
+                image_files.append(os.path.join(basepath, f))
+        # 检查是否有图像文件
+        if len(image_files) != 0:
+            # 设置动态检索相关变量
+            # self.dynamic_database_base_path + self.dynamic_database_image_files[i] 可以获取图像完成路径
+            self.dynamic_database_base_path = os.path.dirname(dynamic_database_path)
+            self.dynamic_database_image_files = image_files
+            return True
+        return False
 
     def show_search_result(self, result_sim, result_image_paths, dataset_base_path):
         for i in range(10):
