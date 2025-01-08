@@ -7,9 +7,13 @@ Description: tbps ui main window
 '''
 import os
 import sys
+# 通过当前文件目录的相对路径设置工程的根目录
 current_file_path = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(current_file_path, "../"))
-from deploy.deploy_tbps import tokenize
+project_base_path = os.path.abspath(os.path.join(current_file_path, "../"))
+
+sys.path.append(project_base_path)
+from deploy.deploy_tbps import tokenize, net
+from deploy.simple_tokenizer import SimpleTokenizer
 
 
 import json
@@ -24,12 +28,17 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
     def __init__(self,parent =None):
         super(MyMainWindow,self).__init__(parent)
         self.setupUi(self)
-        # 初始化模型
-        # TODO: 加载模型
-        self.image_encoder = None
-        self.tokenizer = None
-        self.text_encoder = None
-        self.consine_sim_model = None
+        # 初始化模型        
+        if 0:
+            bpe_path = os.path.join(project_base_path, "data/bpe_simple_vocab_16e6.txt.gz")
+            self.tokenizer = SimpleTokenizer(bpe_path)
+            self.text_encoder = net(os.path.join(project_base_path, "deploy/model/xsmall_text_encode_310B4.om")) 
+            self.consine_sim_model = net(os.path.join(project_base_path, "deploy/model/similarity_310B4.om")) 
+        else:
+            self.image_encoder = None
+            self.tokenizer = None
+            self.text_encoder = None
+            self.consine_sim_model = None
 
         # 静态检索相关变量
         self.static_database_file_path = None
@@ -65,7 +74,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         # 设置基础路径
         current_file_path = os.path.abspath(os.path.dirname(__file__))
         project_base_path = os.path.abspath(os.path.join(current_file_path, "../data/dynamic_database"))
-        print(project_base_path)
+        # print(project_base_path)
         # 打开文件选择对话框
         dynamic_database_path = QtWidgets.QFileDialog.getExistingDirectory(self, '选择文件夹', project_base_path)
         if dynamic_database_path:
@@ -87,7 +96,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             # 检查静态数据库及图像索引是否完备
             if self.check_static_database():
                 result_sim, result_pids, result_image_paths, dataset_base_path = self.static_search(enter_text_description)
-                print(result_sim, result_image_paths)
+                # print(result_sim, result_image_paths)
                 self.show_search_result(result_sim, result_image_paths, dataset_base_path)
             else:
                 self.terminal_message("ERROR: Please check static database!")
@@ -118,7 +127,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         # 获取数据集 base 目录
         dataset_base_path = os.path.dirname(self.static_database_file_path)
         # # 2.获取文本特征
-        # text = tokenize(text, tokenizer=self.tokenizer, text_length=77, truncate=True)
+        # text = tokenize(query_text, tokenizer=self.tokenizer, text_length=77, truncate=True)
         # text = text.reshape((1, 77))
         # result = self.text_encoder.text_forward(text) # npu 计算     
         # text_feature = result[text.argmax(axis=-1), :] # 获取最大值的索引对应的特征，即为文本的 cls 特征        
@@ -157,8 +166,8 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         # K = 10
         # sorted_indices = np.argsort(similarity, axis=1)[:, ::-1]
         # indices = sorted_indices[:, :K]
-        # top10_values = np.take_along_axis(similarity, indices, axis=1)
-        # top10_indices = np.take_along_axis(index, indices, axis=1)
+        # top10_values = np.take_along_axis(similarity, indices, axis=1).flatten()
+        # top10_indices = np.take_along_axis(index, indices, axis=1).flatten()
         
         # 5. 返回 Top10 的相似度值和对应的图像路径
         top10_values = np.random.rand(1, 10).flatten()

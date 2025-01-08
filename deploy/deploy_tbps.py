@@ -1,7 +1,7 @@
 import os
 import json
 
-# import acl
+import acl
 import numpy as np
 from PIL import Image
 

@@ -1,3 +1,7 @@
 /data/dynamic_database
 /data/static_database
 /*/__pycache__
+/deploy/model
+/data/bpe_simple_vocab_16e6.txt.gz
+
+
