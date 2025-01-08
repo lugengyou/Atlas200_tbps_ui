@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>基于昇腾处理器的文图跨模态行人检索应用研究</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -35,6 +35,9 @@
         <height>900</height>
        </size>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(226, 239, 255);</string>
+      </property>
       <property name="frameShape">
        <enum>QFrame::Panel</enum>
       </property>
@@ -42,8 +45,14 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <property name="spacing">
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <property name="horizontalSpacing">
         <number>0</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>4</number>
        </property>
        <item row="1" column="0">
         <widget class="QFrame" name="frame_5">
@@ -104,7 +113,7 @@
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>160</height>
+                 <height>190</height>
                 </size>
                </property>
                <property name="frameShape">
@@ -151,7 +160,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>Operation Guide</string>
+                   <string>使用指南</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -168,7 +177,8 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-style:italic;&quot;&gt;1. Set static/dynamic search.&lt;br /&gt;2. Enter text description.&lt;br /&gt;3. Select static/dynamic search.&lt;br /&gt;4. Click to search and wait for results.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-style:italic;&quot;&gt;1. &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; font-style:italic;&quot;&gt;设置&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-style:italic;&quot;&gt; 静态/动态 检索.&lt;br /&gt;2. 输入&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; font-style:italic;&quot;&gt;文本&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-style:italic;&quot;&gt;描述.&lt;br /&gt;3. &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; font-style:italic;&quot;&gt;选择&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-style:italic;&quot;&gt; 静态/动态 检索.&lt;br /&gt;4. 点击&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; font-style:italic;&quot;&gt;检索&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-style:italic;&quot;&gt;并等待结果.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-style:italic;&quot;&gt;5. 点击&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; font-style:italic;&quot;&gt;保存&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-style:italic;&quot;&gt;按键可保存图像特征为静态检索的检索数据库.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
@@ -186,7 +196,7 @@ p, li { white-space: pre-wrap; }
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>100</height>
+                 <height>110</height>
                 </size>
                </property>
                <property name="frameShape">
@@ -209,7 +219,7 @@ p, li { white-space: pre-wrap; }
                  <number>0</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>9</number>
+                 <number>0</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="label_2">
@@ -233,7 +243,7 @@ p, li { white-space: pre-wrap; }
                    </font>
                   </property>
                   <property name="text">
-                   <string>Static Search Setting</string>
+                   <string>静态检索设置</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -278,15 +288,24 @@ p, li { white-space: pre-wrap; }
                      <property name="font">
                       <font>
                        <pointsize>10</pointsize>
+                       <weight>75</weight>
+                       <bold>true</bold>
                       </font>
                      </property>
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(171, 255, 227);</string>
+                     </property>
                      <property name="text">
-                      <string>Select dataset</string>
+                      <string>选择数据集</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="lineEdit_select_dataset"/>
+                    <widget class="QLineEdit" name="lineEdit_select_dataset">
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(249, 251, 255);</string>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -299,13 +318,13 @@ p, li { white-space: pre-wrap; }
                <property name="minimumSize">
                 <size>
                  <width>0</width>
-                 <height>150</height>
+                 <height>140</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>200</height>
+                 <height>160</height>
                 </size>
                </property>
                <property name="frameShape">
@@ -318,6 +337,9 @@ p, li { white-space: pre-wrap; }
                 <number>0</number>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_4">
+                <property name="spacing">
+                 <number>6</number>
+                </property>
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -349,7 +371,7 @@ p, li { white-space: pre-wrap; }
                    </font>
                   </property>
                   <property name="text">
-                   <string>Dynamic Search Setting</string>
+                   <string>动态检索设置</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -418,15 +440,24 @@ p, li { white-space: pre-wrap; }
                         <property name="font">
                          <font>
                           <pointsize>10</pointsize>
+                          <weight>75</weight>
+                          <bold>true</bold>
                          </font>
                         </property>
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(171, 255, 227);</string>
+                        </property>
                         <property name="text">
-                         <string>Select path</string>
+                         <string>选择路径</string>
                         </property>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="lineEdit_select_path"/>
+                       <widget class="QLineEdit" name="lineEdit_select_path">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(249, 251, 255);</string>
+                        </property>
+                       </widget>
                       </item>
                      </layout>
                     </widget>
@@ -457,16 +488,19 @@ p, li { white-space: pre-wrap; }
                         <property name="maximumSize">
                          <size>
                           <width>100</width>
-                          <height>16777215</height>
+                          <height>26</height>
                          </size>
                         </property>
                         <property name="font">
                          <font>
-                          <pointsize>10</pointsize>
+                          <pointsize>11</pointsize>
                          </font>
                         </property>
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(226, 250, 255);</string>
+                        </property>
                         <property name="text">
-                         <string>Static name:</string>
+                         <string>另存数据库:</string>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>
@@ -474,7 +508,11 @@ p, li { white-space: pre-wrap; }
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="lineEdit_dynamic_to_static_name"/>
+                       <widget class="QLineEdit" name="lineEdit_dynamic_to_static_name">
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(249, 251, 255);</string>
+                        </property>
+                       </widget>
                       </item>
                       <item>
                        <widget class="QPushButton" name="pushButton_3">
@@ -493,10 +531,15 @@ p, li { white-space: pre-wrap; }
                         <property name="font">
                          <font>
                           <pointsize>10</pointsize>
+                          <weight>75</weight>
+                          <bold>true</bold>
                          </font>
                         </property>
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(171, 255, 227);</string>
+                        </property>
                         <property name="text">
-                         <string>Save</string>
+                         <string>保存</string>
                         </property>
                        </widget>
                       </item>
@@ -520,7 +563,7 @@ p, li { white-space: pre-wrap; }
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>300</height>
+                 <height>290</height>
                 </size>
                </property>
                <property name="frameShape">
@@ -534,7 +577,7 @@ p, li { white-space: pre-wrap; }
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_5">
                 <property name="spacing">
-                 <number>0</number>
+                 <number>6</number>
                 </property>
                 <property name="leftMargin">
                  <number>0</number>
@@ -570,7 +613,7 @@ p, li { white-space: pre-wrap; }
                    </font>
                   </property>
                   <property name="text">
-                   <string>Enter Text Description</string>
+                   <string>输入文本并检索</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -587,13 +630,13 @@ p, li { white-space: pre-wrap; }
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_8">
                    <property name="spacing">
-                    <number>0</number>
+                    <number>14</number>
                    </property>
                    <property name="leftMargin">
                     <number>9</number>
                    </property>
                    <property name="topMargin">
-                    <number>0</number>
+                    <number>6</number>
                    </property>
                    <property name="rightMargin">
                     <number>9</number>
@@ -603,6 +646,15 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <item>
                     <widget class="QTextEdit" name="textEdit_enter_text_description">
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(249, 251, 255);</string>
+                     </property>
                      <property name="frameShape">
                       <enum>QFrame::NoFrame</enum>
                      </property>
@@ -620,13 +672,13 @@ p, li { white-space: pre-wrap; }
                      <property name="minimumSize">
                       <size>
                        <width>0</width>
-                       <height>50</height>
+                       <height>30</height>
                       </size>
                      </property>
                      <property name="maximumSize">
                       <size>
                        <width>16777215</width>
-                       <height>50</height>
+                       <height>30</height>
                       </size>
                      </property>
                      <property name="frameShape">
@@ -662,16 +714,19 @@ p, li { white-space: pre-wrap; }
                         <property name="maximumSize">
                          <size>
                           <width>100</width>
-                          <height>16777215</height>
+                          <height>24</height>
                          </size>
                         </property>
                         <property name="font">
                          <font>
-                          <pointsize>10</pointsize>
+                          <pointsize>11</pointsize>
                          </font>
                         </property>
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(226, 250, 255);</string>
+                        </property>
                         <property name="text">
-                         <string>Search style:</string>
+                         <string>检索方式:</string>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>
@@ -682,17 +737,20 @@ p, li { white-space: pre-wrap; }
                        <widget class="QComboBox" name="comboBox_search_style">
                         <property name="font">
                          <font>
-                          <pointsize>9</pointsize>
+                          <pointsize>10</pointsize>
                          </font>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(171, 255, 227);</string>
                         </property>
                         <item>
                          <property name="text">
-                          <string>Static Search</string>
+                          <string>静态检索</string>
                          </property>
                         </item>
                         <item>
                          <property name="text">
-                          <string>Dynamic Search</string>
+                          <string>动态检索</string>
                          </property>
                         </item>
                        </widget>
@@ -718,8 +776,11 @@ p, li { white-space: pre-wrap; }
                           <bold>true</bold>
                          </font>
                         </property>
+                        <property name="styleSheet">
+                         <string notr="true">background-color: rgb(128, 186, 169);</string>
+                        </property>
                         <property name="text">
-                         <string>Search</string>
+                         <string>检索</string>
                         </property>
                        </widget>
                       </item>
@@ -745,26 +806,31 @@ p, li { white-space: pre-wrap; }
                     <widget class="QLabel" name="label_9">
                      <property name="minimumSize">
                       <size>
-                       <width>70</width>
+                       <width>100</width>
                        <height>0</height>
                       </size>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>70</width>
-                       <height>16777215</height>
+                       <width>100</width>
+                       <height>24</height>
                       </size>
                      </property>
                      <property name="font">
                       <font>
-                       <pointsize>10</pointsize>
+                       <pointsize>11</pointsize>
+                       <weight>50</weight>
+                       <bold>false</bold>
                       </font>
                      </property>
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(192, 238, 255);</string>
+                     </property>
                      <property name="text">
-                      <string>Progress:</string>
+                      <string>检索进度:</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -794,6 +860,9 @@ p, li { white-space: pre-wrap; }
                  <width>16777215</width>
                  <height>150</height>
                 </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(173, 203, 214);</string>
                </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
@@ -865,7 +934,7 @@ p, li { white-space: pre-wrap; }
                       </size>
                      </property>
                      <property name="text">
-                      <string>TERMINAL</string>
+                      <string>终端</string>
                      </property>
                     </widget>
                    </item>
@@ -899,8 +968,11 @@ p, li { white-space: pre-wrap; }
                        <height>16777215</height>
                       </size>
                      </property>
+                     <property name="styleSheet">
+                      <string notr="true">background-color: rgb(207, 253, 255);</string>
+                     </property>
                      <property name="text">
-                      <string>Clean</string>
+                      <string>清除</string>
                      </property>
                     </widget>
                    </item>
@@ -909,6 +981,9 @@ p, li { white-space: pre-wrap; }
                 </item>
                 <item>
                  <widget class="QTextBrowser" name="textBrowser_terminal_output">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(199, 229, 232);</string>
+                  </property>
                   <property name="frameShape">
                    <enum>QFrame::NoFrame</enum>
                   </property>
@@ -1399,14 +1474,20 @@ p, li { white-space: pre-wrap; }
        </item>
        <item row="0" column="0">
         <widget class="QFrame" name="frame">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>45</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>45</height>
           </size>
          </property>
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
@@ -1418,6 +1499,9 @@ p, li { white-space: pre-wrap; }
           <number>0</number>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
           <property name="leftMargin">
            <number>9</number>
           </property>
@@ -1428,7 +1512,7 @@ p, li { white-space: pre-wrap; }
            <number>9</number>
           </property>
           <property name="bottomMargin">
-           <number>0</number>
+           <number>9</number>
           </property>
           <item>
            <widget class="QLabel" name="label">
@@ -1452,7 +1536,7 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="font">
              <font>
-              <pointsize>16</pointsize>
+              <pointsize>20</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1461,7 +1545,11 @@ p, li { white-space: pre-wrap; }
              <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;TBPS APP&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:20pt; font-weight:600; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#000000;&quot;&gt;文图跨模态行人检索应用系统&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
