@@ -2,7 +2,7 @@
 Author: gengyou.lu 1770591868@qq.com
 Date: 2025-01-07 10:34:13
 FilePath: /Atlas200_tbps_ui/ui_designer/TbpsUiMainWindow.py
-LastEditTime: 2025-01-10 16:13:09
+LastEditTime: 2025-01-10 17:14:28
 Description: tbps ui main window
 '''
 import os
@@ -308,18 +308,19 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             K = 10
             sorted_indices = np.argsort(similarity, axis=1)[:, ::-1]
             indices = sorted_indices[:, :K]
-            top10_values = np.take_along_axis(similarity, indices, axis=1).flatten()
-            top10_indices = np.take_along_axis(index, indices, axis=1).flatten()
+            top10_values = np.take_along_axis(similarity, indices, axis=1).flatten().tolist()
+            top10_indices = np.take_along_axis(index, indices, axis=1).flatten().tolist()
             self.update_progress_bar(4, 5)
         else:
             # DEBUG for development on x86
-            top10_values = np.random.rand(1, 10).flatten()
+            top10_values = np.random.rand(1, 10).flatten().tolist()
             # top10_indices = np.random.randint(0, N, (1, 10)).flatten() 
-            top10_indices = np.array([1,1,1,2,3,4,5,6,7,8]).flatten()   
+            top10_indices = np.array([1,1,1,2,3,4,5,6,7,8]).flatten().tolist()   
         # 5. 返回 Top10 的相似度值和对应的图像路径
         show_images_path =  [static_database_json['img_paths'][i] for i in top10_indices]
+        result_image_ids = [static_database_json['image_pids'][i] for i in top10_indices]
         self.update_progress_bar(5, 5)
-        return top10_values, top10_indices, show_images_path, dataset_base_path
+        return top10_values, result_image_ids, show_images_path, dataset_base_path
 
     def dynamic_search(self, query_text):
         # 设置数据集路径
@@ -382,14 +383,14 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             K = 10
             sorted_indices = np.argsort(similarity, axis=1)[:, ::-1]
             indices = sorted_indices[:, :K]
-            top10_values = np.take_along_axis(similarity, indices, axis=1).flatten()
-            top10_indices = np.take_along_axis(index, indices, axis=1).flatten()
+            top10_values = np.take_along_axis(similarity, indices, axis=1).flatten().tolist()
+            top10_indices = np.take_along_axis(index, indices, axis=1).flatten().tolist()
         else:        
             # DEBUG for development on x86
             self.dynamic_image_features = np.random.randn(500, 512)
             N = self.dynamic_image_features.shape[0]
-            top10_values = np.random.rand(1, 10).flatten()
-            top10_indices = np.random.randint(0, N, (1, 10)).flatten()              
+            top10_values = np.random.rand(1, 10).flatten().tolist()
+            top10_indices = np.random.randint(0, N, (1, 10)).flatten().tolist()              
         # 5. 返回 Top10 的相似度值和对应的图像路径
         show_images_path =  [os.path.join(dataset_base_path, database_image_files[i]) for i in top10_indices]
         # 6. 设置保存动态图像特征文件名称
@@ -520,8 +521,8 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
     def catch_json_result(self, search_style, result_sim, result_imgids_or_pids, result_image_paths, dataset_base_path):
         self.current_search_json_result["search_style"] = str(search_style)
         self.current_search_json_result["query_text"] = self.textEdit_enter_text_description.toPlainText()        
-        self.current_search_json_result["similarity"] = result_sim.tolist()
-        self.current_search_json_result["result_imgids_or_pids"] = result_imgids_or_pids.tolist()
+        self.current_search_json_result["similarity"] = result_sim
+        self.current_search_json_result["result_imgids_or_pids"] = result_imgids_or_pids
         self.current_search_json_result["image_paths"] = result_image_paths
         self.current_search_json_result["dataset_base_path"] = dataset_base_path
         self.current_search_json_result["gt_image_path"] = self.current_search_gt_image_path
