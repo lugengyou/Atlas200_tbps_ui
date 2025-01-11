@@ -2,7 +2,7 @@
 Author: gengyou.lu 1770591868@qq.com
 Date: 2025-01-07 10:34:13
 FilePath: /Atlas200_tbps_ui/ui_designer/TbpsUiMainWindow.py
-LastEditTime: 2025-01-10 17:14:28
+LastEditTime: 2025-01-11 10:40:27
 Description: tbps ui main window
 '''
 import os
@@ -160,6 +160,9 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             self.terminal_message(enter_text_description)
             # 检查静态数据库及图像索引是否完备
             if self.check_static_database():
+                # 清空结果显示，等待结果
+                self.clean_show_result_before_search()
+                # 静态检索
                 result_sim, result_pids, result_image_paths, dataset_base_path = self.static_search(enter_text_description)                
                 # 汇总检索结果
                 self.catch_json_result(search_style, result_sim, result_pids, result_image_paths, dataset_base_path)
@@ -175,6 +178,9 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             self.terminal_message("Query:")
             self.terminal_message(enter_text_description)            
             if self.get_dynamic_database():
+                # 清空结果显示，等待结果
+                self.clean_show_result_before_search()
+                # 动态检索
                 result_sim, result_image_ids, result_image_paths, dataset_base_path = self.dynamic_search(enter_text_description)                
                 # 汇总检索结果
                 self.catch_json_result(search_style, result_sim, result_image_ids, result_image_paths, dataset_base_path)
@@ -599,4 +605,19 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
                 }
             """)
 
-        
+    def clean_show_result_before_search(self):
+        # 清空 Top10 结果
+        for i in range(10):
+            self.show_images_label_list[i].clear()
+            self.show_sim_label_list[i].clear()                               
+        # 清空检索概要总览  
+        self.frame_query_abstract.setStyleSheet("background-color: rgb(226, 239, 255);")      
+        self.label_query_abstract.setText("")                          
+        self.label_show_result_gt_image.clear()
+        self.label_show_result_gt_label.setText("")                            
+        self.label_show_result_PID_label.setText("")                    
+        self.label_show_result_top1_image.clear()        
+        self.label_show_result_top1_label.setText("")                                    
+        self.label_show_result_sim_label.setText("")                
+        self.textBrowser_show_result_abstract.clear()
+
