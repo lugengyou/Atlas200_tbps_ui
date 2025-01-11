@@ -2,7 +2,7 @@
 Author: gengyou.lu 1770591868@qq.com
 Date: 2025-01-07 10:34:13
 FilePath: /Atlas200_tbps_ui/ui_designer/TbpsUiMainWindow.py
-LastEditTime: 2025-01-11 10:40:27
+LastEditTime: 2025-01-11 11:24:27
 Description: tbps ui main window
 '''
 import os
@@ -609,7 +609,9 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         # 清空 Top10 结果
         for i in range(10):
             self.show_images_label_list[i].clear()
-            self.show_sim_label_list[i].clear()                               
+            self.show_sim_label_list[i].clear()              
+            self.show_frame_border(i, show_border=False)
+                                
         # 清空检索概要总览  
         self.frame_query_abstract.setStyleSheet("background-color: rgb(226, 239, 255);")      
         self.label_query_abstract.setText("")                          
