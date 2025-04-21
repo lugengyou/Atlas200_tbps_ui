@@ -2,7 +2,7 @@
     "dataset" : "data/static_database/cuhk_test_dataset/CUHK-PEDES_test_data.npy",
     "query" : [
         {
-            "GT" : "CUHK-PEDES/imgs/CUHK01/0107002.png",
+            "GT" : "/home/HwHiAiUser/workspaces/lugy/Atlas200_tbps_ui/data/static_database/cuhk_test_dataset/CUHK-PEDES/imgs/CUHK01/0107002.png",
             "pids" : "11004",
             "query" : [
                 "The man has short, dark hair and wears khaki pants with an oversized grey hoodie. His black backpack hangs from one shoulder.",
