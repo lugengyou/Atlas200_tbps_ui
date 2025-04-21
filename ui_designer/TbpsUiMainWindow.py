@@ -56,6 +56,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         self.dynamic_database_base_path = "" # 所选数据集文件夹的父目录，用于构建图像完整路径
         self.dynamic_dataset_folder_name = "" # 所选数据集文件夹名称，用于构建存储图像特征文件名
         self.dynamic_database_image_files = []
+        self.dynamic_database_image_ids = []
         self.dynamic_image_features = None
         
         # 显示相关变量
@@ -205,7 +206,10 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         np.save(save_feature_path, self.dynamic_image_features)
         # 保存图像对应路径
         save_image_path = save_feature_path.replace('.npy', '.json')
-        json_data = {"img_paths": self.dynamic_database_image_files}
+        json_data = {"img_paths": self.dynamic_database_image_files,
+                    "image_pids": self.dynamic_database_image_ids,
+                    "caption_pids": None,
+                    "captions": None}
         json.dump(json_data, open(save_image_path, 'w'), indent=4)
         self.terminal_message("Save dynamic dataset successfully!")
 
@@ -323,7 +327,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
             # top10_indices = np.random.randint(0, N, (1, 10)).flatten() 
             top10_indices = np.array([1,1,1,2,3,4,5,6,7,8]).flatten().tolist()   
         # 5. 返回 Top10 的相似度值和对应的图像路径
-        show_images_path =  [static_database_json['img_paths'][i] for i in top10_indices]
+        show_images_path =  [static_database_json['img_paths'][i] for i in top10_indices]        
         result_image_ids = [static_database_json['image_pids'][i] for i in top10_indices]
         self.update_progress_bar(5, 5)
         return top10_values, result_image_ids, show_images_path, dataset_base_path
@@ -443,15 +447,20 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         image_files = []
         basepath = os.path.basename(dynamic_database_path) # 提取最后一级目录，制作图像相对路径
         self.dynamic_dataset_folder_name = basepath
+        i = 1
+        image_ids = []
         for f in os.listdir(dynamic_database_path):
             if f.lower().endswith(image_extensions):
                 image_files.append(os.path.join(basepath, f))
+                image_ids.append(i)
+                i = i + 1
         # 检查是否有图像文件
         if len(image_files) != 0:
             # 设置动态检索相关变量
             # self.dynamic_database_base_path + self.dynamic_database_image_files[i] 可以获取图像完成路径
             self.dynamic_database_base_path = os.path.dirname(dynamic_database_path)
             self.dynamic_database_image_files = image_files
+            self.dynamic_database_image_ids = image_ids
             return True
         return False
 
