@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/HwHiAiUser/workspaces/lugy/Atlas200_tbps_ui/ui_designer/tbps.ui'
+# Form implementation generated from reading ui file 'f:\Study\thesis\code\Atlas200_tbps_ui\ui_designer\tbps.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.10
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1367, 843)
+        MainWindow.resize(1367, 867)
         MainWindow.setStyleSheet("")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setStyleSheet("")
@@ -155,7 +155,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.addWidget(self.comboBox_PID)
         self.lineEdit_PID = QtWidgets.QLineEdit(self.frame_31)
         self.lineEdit_PID.setMaximumSize(QtCore.QSize(60, 16777215))
-        self.lineEdit_PID.setText("")
         self.lineEdit_PID.setObjectName("lineEdit_PID")
         self.horizontalLayout_10.addWidget(self.lineEdit_PID)
         self.verticalLayout_3.addWidget(self.frame_31)
@@ -921,10 +920,12 @@ class Ui_MainWindow(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-style:italic;\">4. 点击</span><span style=\" font-size:12pt; font-weight:600; font-style:italic;\">保存</span><span style=\" font-size:12pt; font-style:italic;\">按键可将动态检索提取的图像特征保存为静态检索的数据库.</span></p></body></html>"))
         self.label_2.setText(_translate("MainWindow", "静态检索设置"))
         self.pushButton.setText(_translate("MainWindow", "选择数据集"))
-        self.comboBox_GT.setItemText(0, _translate("MainWindow", "无 GT"))
-        self.comboBox_GT.setItemText(1, _translate("MainWindow", "加载 GT"))
-        self.comboBox_PID.setItemText(0, _translate("MainWindow", "无 PID"))
-        self.comboBox_PID.setItemText(1, _translate("MainWindow", "加载 PID"))
+        self.comboBox_GT.setItemText(0, _translate("MainWindow", "加载 GT"))
+        self.comboBox_GT.setItemText(1, _translate("MainWindow", "无 GT"))
+        self.lineEdit_GT.setText(_translate("MainWindow", "/home/HwHiAiUser/workspaces/lugy/Atlas200_tbps_ui/data/static_database/cuhk_test_dataset/CUHK-PEDES/imgs/CUHK01/0107002.png"))
+        self.comboBox_PID.setItemText(0, _translate("MainWindow", "加载 PID"))
+        self.comboBox_PID.setItemText(1, _translate("MainWindow", "无 PID"))
+        self.lineEdit_PID.setText(_translate("MainWindow", "11004"))
         self.label_4.setText(_translate("MainWindow", "动态检索设置"))
         self.pushButton_2.setText(_translate("MainWindow", "选择路径"))
         self.label_7.setText(_translate("MainWindow", "另存数据库:"))
@@ -933,8 +934,8 @@ class Ui_MainWindow(object):
         self.textEdit_enter_text_description.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt;\">The man has short, dark hair and wears khaki pants with an oversized grey hoodie. His black backpack hangs from one shoulder.</span></p></body></html>"))
+"</style></head><body style=\" font-family:\'SimSun\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Sans Serif\'; font-size:10pt;\">The man has short, dark hair and wears khaki pants with an oversized grey hoodie. His black backpack hangs from one shoulder.</span></p></body></html>"))
         self.label_11.setText(_translate("MainWindow", "GT"))
         self.label_8.setText(_translate("MainWindow", "检索方式:"))
         self.comboBox_search_style.setItemText(0, _translate("MainWindow", "静态检索"))
@@ -946,8 +947,8 @@ class Ui_MainWindow(object):
         self.textBrowser_show_result_abstract.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Sans Serif\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+"</style></head><body style=\" font-family:\'SimSun\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Sans Serif\';\"><br /></p></body></html>"))
         self.label_17.setText(_translate("MainWindow", "结果展示"))
         self.pushButton_8.setText(_translate("MainWindow", "当前检索"))
         self.pushButton_7.setText(_translate("MainWindow", "历史检索"))
