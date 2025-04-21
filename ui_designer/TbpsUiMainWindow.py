@@ -2,7 +2,7 @@
 Author: gengyou.lu 1770591868@qq.com
 Date: 2025-01-07 10:34:13
 FilePath: /Atlas200_tbps_ui/ui_designer/TbpsUiMainWindow.py
-LastEditTime: 2025-01-11 11:24:27
+LastEditTime: 2025-04-21 11:05:35
 Description: tbps ui main window
 '''
 import os
@@ -521,7 +521,17 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
                 else:
                     self.terminal_message("Please select image file for setting GT", is_error=True)
                     return False 
-            self.current_search_gt_image_path = self.static_gt_image_path                        
+            self.current_search_gt_image_path = self.static_gt_image_path
+            # PID 设置
+            set_pid_flag = self.comboBox_PID.currentText()
+            if set_pid_flag == "无 PID":
+                self.set_pid = "none"
+            elif set_pid_flag == "加载 PID":
+                pid = self.lineEdit_PID.text()
+                if pid == "":
+                    self.terminal_message("Please enter PID", is_error=True)
+                    return False
+                self.set_pid = pid                                                
         elif search_style == "动态检索":
             # 显示无 GT 图像            
             self.dynamic_gt_image_path = os.path.join(current_file_path, "ui_data/ui_no_gt.jpg")
